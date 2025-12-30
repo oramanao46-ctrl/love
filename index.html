@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Mind</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --accent-color: #ff3b3b; /* แดง */
+            --book-bg: #f4f4f0;
+            --book-text: #2d2d2d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Sarabun', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- STICKERS --- */
+        .sticker-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 5; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sticker {
+            position: absolute;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: scale(0.5);
+            font-size: 3rem; 
+        }
+
+        .sticker-container.scatter .sticker {
+            opacity: 1;
+            transform: scale(1) rotate(var(--r));
+        }
+
+        /* ตำแหน่งกระจายตัว */
+        .sticker-container.scatter .sticker:nth-child(1) { top: 10%; left: 5%; --r: -15deg; }
+        .sticker-container.scatter .sticker:nth-child(2) { top: 12%; right: 5%; --r: 20deg; }
+        .sticker-container.scatter .sticker:nth-child(3) { bottom: 15%; left: 5%; --r: -10deg; }
+        .sticker-container.scatter .sticker:nth-child(4) { bottom: 10%; right: 5%; --r: 30deg; }
+        .sticker-container.scatter .sticker:nth-child(5) { top: 50%; left: 2%; --r: 45deg; }
+        .sticker-container.scatter .sticker:nth-child(6) { top: 45%; right: 2%; --r: -25deg; }
+
+        /* --- SECTION 1: THE BOOK --- */
+        #section1 {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .book {
+            width: 100%;
+            max-width: 800px;
+            min-height: 500px;
+            background-color: var(--book-bg);
+            display: flex;
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .book::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(0,0,0,0.1);
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .page {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .page.left {
+            align-items: center;
+            background-color: #fcfcfc;
+        }
+
+        .photo-frame {
+            width: 250px;
+            height: 320px;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transform: rotate(-3deg);
+            margin-bottom: 20px;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(20%);
+        }
+
+        .page.right {
+            font-family: 'Caveat', cursive;
+            color: var(--book-text);
+            font-size: 1.3rem;
+            line-height: 1.6;
+        }
+
+        .page.right h2 {
+            font-family: 'Sarabun', sans-serif;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        /* --- SECTION 2: CONTENT --- */
+        #section2 {
+            min-height: 100vh;
+            padding: 80px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+            z-index: 20;
+            background: linear-gradient(to bottom, transparent, #0a0a0a 20%);
+        }
+
+        .content-wrapper {
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+            gap: 40px;
+        }
+
+        .gallery-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .gallery-img {
+            width: 100%;
+            border-radius: 8px;
+            border: 4px solid #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: transform 0.3s;
+        }
+        
+        .gallery-img:hover { transform: scale(1.02); }
+
+        .text-side {
+            flex: 1.5;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .text-side p {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            text-align: justify;
+            color: #ddd;
+        }
+
+        .highlight {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .book {
+                flex-direction: column;
+                height: auto;
+                min-height: auto;
+                width: 100%;
+            }
+
+            .book::before {
+                width: 100%;
+                height: 2px;
+                top: auto;
+                bottom: auto;
+                left: 0;
+                right: 0;
+                transform: none;
+                position: relative; 
+                margin: 0;
+            }
+
+            .page { padding: 30px 20px; }
+            
+            .photo-frame {
+                width: 200px;
+                height: 260px;
+                transform: rotate(-2deg);
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .gallery-side {
+                flex-direction: row;
+                gap: 10px;
+                overflow-x: auto;
+            }
+
+            .gallery-img {
+                width: 50%;
+                height: auto;
+                object-fit: cover;
+            }
+
+            .text-side {
+                padding: 20px;
+            }
+
+            .sticker { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sticker-container" id="stickers">
+        <div class="sticker">❤️</div>
+        <div class="sticker">✨</div>
+        <div class="sticker">🌹</div>
+        <div class="sticker">🎸</div>
+        <div class="sticker">💋</div>
+        <div class="sticker">🧸</div>
+    </div>
+
+    <section id="section1">
+        <div class="book">
+            <div class="page left">
+                <div class="photo-frame">
+                    <img src="photo1.jpg" alt="Cover Photo">
+                </div>
+            </div>
+            
+            <div class="page right">
+                <h2>Happy New Year!</h2>
+                <p>This is a message I put a lot of heart into, so I hope you’ll read it carefully. I’m really, really happy to have you in my life. I hope this year will be the happiest one for you.</p>
+                <br>
+                <p>Thank you for coming into my life.</p>
+                <br>
+                <p style="text-align: center; color: var(--accent-color); font-weight: bold; margin-top: 10px;">
+                    If you’re ready, let’s start. <br> &darr;
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="section2">
+        <div class="content-wrapper">
+            <div class="gallery-side">
+                <img src="photo2.jpg" class="gallery-img" alt="Memory 1">
+                <img src="photo3.jpg" class="gallery-img" alt="Memory 2">
+            </div>
+
+            <div class="text-side">
+                <p>ปีใหม่แล้ว เย่ เย่ เค้าก็ยังอยู่กับเธอเหมือนเดิม คุยกับเธอมานานมาก ไม่เคยคุยกับใครนานขนาดนี้เลย5555 เค้าดีใจนะที่เรายังอยู่ด้วยกัน ยังไม่ได้ทิ้งกันไปไหน แล้วก็ยังอยากให้อยู่ด้วยกันแบบนี้ไปเรื่อยๆนะ อยู่กับเธอมาครึ่งปีแล้วนะ</p>
+
+                <p>เค้าก็ไม่รู้หรอกนะว่าเธอรู้สึกยังไงกับเค้าบ้างที่ผ่านมา แต่เค้ารู้สึกดีกับเธอมากๆ มากจนไม่อยากเสียเธอไป ที่ผ่านมามันก็มีเรื่องที่ดีไม่ดีบ้าง เรื่องที่มันไม่ดีที่ผ่านมาเค้าขอโทษทุกๆอย่างเลยนะ เค้าก็มีทำตัวไม่ดีไปบ้าง แต่เค้าก็ยังอยากอยู่กับเธอเหมือนเดิมนะ เค้าไม่รู้ว่าอนาคตเราจะเป็นยังไงแต่ว่าที่ผ่านมาเค้าก็มีความสุขกับเธอมากๆนะ อยู่กับเธอเเล้วแฮปปี้สุดๆ</p>
+                
+                <p>ที่ผ่านมาถึงเราจะทะเลาะกันบ่อย จะเลิกคุยกันหลายครั้ง แต่เราก็ยังอยู่ด้วยกันได้ <span class="highlight">เก่งอ่ะ5555</span> แล้วก็ขอบคุณเธอเหมือนกันที่อยู่กับเค้ามาจนถึงวันนี้ คุยกับเธอก็ถือว่าเป็นเรื่องดีๆในปีนี้เลยนะ ปีที่ผ่านมาเธอก็เก่งแล้วนะะ เก่งมากๆที่ผ่านมาได้เค้าอาจจะไม่ได้อยู่กับเธอมาตั้งแต่ต้นปี ไม่รู้ว่าก่อนหน้านี้เธอเจออะไรมาบ้าง แต่ครึ่งปีหลังเค้าได้อยู่กับเธอจนหมดปีเลยย</p>
+                
+                <p>ไม่รู้ว่าปีหน้าเธอจะเจออะไรบ้าง เค้าก็ยังอยากเป็นคนที่คอยอยู่ข้างๆเธอนะ อยู่เป็นรอยยิ้มให้กันแบบนี้ไปนานๆ ก็ขอให้ปีนี้เป็นปีที่ดีสำหรับเธอนะ ทุกๆเรื่องเลยเรื่องเรียน เรื่องครอบครัว เรื่องความรัก แล้วก็ขอให้พี่หล่อขึ้นเรื่อยๆ <span class="highlight">ไม่ใช่ว่าที่ผ่านมาไม่หล่อคือหล่อ หล่อมาตลอดไม่เคยไม่หล่อ พี่หล่อที่สุดในใจน้องละ</span> เธอหล่อมากๆนะสำหรับเค้า พี่ไม่เคยไม่หล่อเลยสักวัน อยากมีคนหล่อๆแบบนี้อยู่ในชีวิตแบบนี้ไปนานๆเลออ</p>
+
+                <p>น้องอาจจะไม่ได้พูดชมพี่บ่อยๆ แต่พี่เป็นสุดหล่ออของน้องตลอดเเหละ และก็ขอให้ไม่มีใครทำให้เธอเสียใจ และเค้าก็ไม่ได้อยากเป็นคนที่ทำให้เธอเสียใจ เค้าก็ไม่ได้ชอบที่เห็นเธอเสียใจเหมือนกัน แต่ก็ไม่อยากให้คาดหวังในอนาคต อะไรจะเกิดก็ต้องเกิด ปีนี้เค้าอยากอยู่กับเธอไปทั้งปีเลยย อยากมีเธอให้คิดถึงทุกๆวัน น้องคงจะพูดบ่อยมากๆว่าคิดถึงพี่ ถึงจะอยู่ด้วยกัน โทรคุยกันอยู่ ก็คิดถึงจริงๆง่ะ ไม่จำเป็นต้องอยู่ไกลเลย ก็คิดถึงได้้</p>
+                
+                <p>แล้วน้องก็ชอบเวลาพี่บอกคิดถึงน้องเหมือนกัน น้องชอบมากๆๆ แบบมากที่สุดเลยเวลาพี่บอกคิดถึง น้องแคปหมดอ่ะตอนพี่บอกคิดถึง55555 ถึงพี่จะไม่ได้บอกบ่อยๆ แต่เค้าชอบมันมากนะ ปีใหม่นี้เค้าไม่ได้มีอะไรให้เธอ รอเอาวันเกิดนะ5555 เธอรู้มั้ยว่าเค้าชอบเค้าดาวน์มากๆเลยนะ ก็เหมือนที่ชอบเธอมากๆเหมือนกัน แอบก้อปคำ ิิ</p>
+                
+                <p>ขอให้ปีนี้เป็นปีที่ดีสำหรับเธอนะ ถ้าไม่ได้รีบไปไหนก็อย่าพึ่งทิ้งกันล่ะ อยู่เป็นปะป๊าของม่อนไปนานนาน อย่าพึ่งไปเป็นปะป๊าให้ไอ้เป็ดตัวอื่นละะ ขอให้พี่แฮปปี้แฮปปี้กับปีนี้เน้ออ</p>
+                
+                <p class="highlight" style="font-size: 1.4rem; text-align: center; margin-top: 30px; border-top: 1px solid #444; padding-top: 20px;">
+                    rak P’mind naa Happy New Year kaa 😽
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const stickerContainer = document.getElementById('stickers');
+            const scrollPosition = window.scrollY;
+
+            // ปรับระยะการเลื่อนเล็กน้อย
+            if (scrollPosition > 80) {
+                stickerContainer.classList.add('scatter');
+            } else {
+                stickerContainer.classList.remove('scatter');
+            }
+        });
+    </script>
+</body>
+</html>
